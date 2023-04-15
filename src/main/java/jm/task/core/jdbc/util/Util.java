@@ -18,7 +18,7 @@ public class Util {
     private static final String DB_USERNAME = "root";
     private static final String DB_PASSWORD = "NewFakeSQL20";
     private static final String DB_DIALECT = "org.hibernate.dialect.MySQL5Dialect";
-
+    private static SessionFactory sessionFactory;
 
     public static Connection getConnection() {
         Connection connection = null;
@@ -33,29 +33,26 @@ public class Util {
     }
 
     public static SessionFactory getSessionFactory() {
-        SessionFactory sessionFactory = null;
-        try {
-            Configuration configuration = new Configuration();
-            Properties properties = new Properties();
+        if (sessionFactory == null) {
+            try {
+                Configuration configuration = new Configuration();
+                Properties properties = new Properties();
 
-            properties.put(Environment.DRIVER, DB_DRIVER);
-            properties.put(Environment.URL, DB_URL);
-            properties.put(Environment.USER, DB_USERNAME);
-            properties.put(Environment.PASS, DB_PASSWORD);
-            properties.put(Environment.DIALECT, DB_DIALECT);
+                properties.put(Environment.DRIVER, DB_DRIVER);
+                properties.put(Environment.URL, DB_URL);
+                properties.put(Environment.USER, DB_USERNAME);
+                properties.put(Environment.PASS, DB_PASSWORD);
+                properties.put(Environment.DIALECT, DB_DIALECT);
 
-            properties.put(Environment.SHOW_SQL, "true");
-            properties.put(Environment.CURRENT_SESSION_CONTEXT_CLASS, "thread");
-            properties.put(Environment.HBM2DDL_AUTO, "update");
+                properties.put(Environment.SHOW_SQL, "true");
+                properties.put(Environment.CURRENT_SESSION_CONTEXT_CLASS, "thread");
+                properties.put(Environment.HBM2DDL_AUTO, "update");
 
-            configuration.setProperties(properties);
-//            configuration.addAnnotatedClass(User.class);
-//
-//            ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder().applySettings(configuration.getProperties()).build();
-//            sessionFactory = configuration.buildSessionFactory(serviceRegistry);
-            sessionFactory = configuration.addAnnotatedClass(User.class).buildSessionFactory();
-        } catch (Exception e) {
-            e.printStackTrace();
+                configuration.setProperties(properties);
+                sessionFactory = configuration.addAnnotatedClass(User.class).buildSessionFactory();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         return sessionFactory;
     }
