@@ -17,9 +17,8 @@ public class UserDaoHibernateImpl implements UserDao {
 
     @Override
     public void createUsersTable() {
-        Transaction transaction = null;
         try (Session session = sessionFactory.getCurrentSession()) {
-            transaction = session.beginTransaction();
+            session.beginTransaction();
             session.createSQLQuery("""
                 CREATE TABLE IF NOT EXISTS USERS
                 (
@@ -30,7 +29,7 @@ public class UserDaoHibernateImpl implements UserDao {
                 );""")
                     .addEntity(User.class)
                     .executeUpdate();
-            transaction.commit();
+            session.getTransaction().commit();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -38,13 +37,12 @@ public class UserDaoHibernateImpl implements UserDao {
 
     @Override
     public void dropUsersTable() {
-        Transaction transaction = null;
         try (Session session = sessionFactory.getCurrentSession()) {
-            transaction = session.beginTransaction();
+            session.beginTransaction();
             session.createSQLQuery("DROP TABLE IF EXISTS USERS")
                     .addEntity(User.class)
                     .executeUpdate();
-            transaction.commit();
+            session.getTransaction().commit();
         } catch (Exception e) {
             e.printStackTrace();
         }
